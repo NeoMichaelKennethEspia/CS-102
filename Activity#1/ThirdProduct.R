@@ -1,10 +1,9 @@
-
 install.packages("rvest")
 
 library(rvest)
 library(polite)
 
-url <- "https://www.amazon.com/s?k=pokemon+cards&crid=1IMWTSNKX03SD&sprefix=POKEMON%2Caps%2C419&ref=nb_sb_ss_ts-doa-p_1_7"
+url <- "https://www.amazon.com/s?k=army+backpack&crid=2FD6HAPB2ZW2J&sprefix=Army%2Caps%2C323&ref=nb_sb_ss_ts-doa-p_4_4"
 
 session <- bow(url, user_agent = "Educational")
 session
@@ -21,8 +20,7 @@ ratings <- character()
 product_count <- 0
 
 for (div_element in div_elements) {
- 
-  brand_element <- html_node(div_element, 'a-size-base-plus a-color-base a-text-normal')
+  brand_element <- html_node(div_element, 'span.a-size-base-plus.a-color-secondary.a-text-normal')
   brand <- ifelse(!is.na(brand_element), html_text(brand_element), '')
   
   description_element <- html_node(div_element, 'div.a-section.a-spacing-small')
@@ -34,10 +32,9 @@ for (div_element in div_elements) {
   review_count_element <- html_node(div_element, 'span.a-size-base')
   review_count <- ifelse(!is.na(review_count_element), html_text(review_count_element), '')
   
-
   rating_element <- html_node(div_element, 'span.a-icon-alt')
   rating <- ifelse(!is.na(rating_element), html_text(rating_element), '')
-
+  
   brand_description <- paste(brand, description)
   brand_descriptions <- c(brand_descriptions, brand_description)
   prices <- c(prices, price)
@@ -47,17 +44,17 @@ for (div_element in div_elements) {
   
 }
 
-product_df1 <- data.frame(Brand_Description = brand_descriptions,
+product_df3 <- data.frame(Brand_Description = brand_descriptions,
                           Price = prices,
                           Review_Count = review_counts,
                           Rating = ratings)
 
-write.csv(product_df1, "product1.csv")
+write.csv(product_df3, "product3.csv")
 
-product_df1$Category <- "Cards"
+product_df3$Category <- "Backpack"
 
-product_df1 <- product_df1[, c("Category", names(product_df1)[-which(names(product_df1) == "Category")])]
+product_df3 <- product_df3[, c("Category", names(product_df3)[-which(names(product_df3) == "Category")])]
 
-write.csv(product_df1, "FirstProduct.csv", row.names = FALSE)
+write.csv(product_df3, "ThirdProduct.csv", row.names = FALSE)
 
-View(FirstProduct)
+View(ThirdProduct)
