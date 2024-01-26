@@ -1,86 +1,63 @@
-install.packages(c("rvest", "httr", "polite", "dplyr", "kableExtra"))
+
+install.packages("rvest")
 
 library(rvest)
-library(httr)
-library(dplyr)
 library(polite)
-library(kableExtra)
 
-polite::use_manners(save_as = 'polite_scrape.R')
-url <- 'https://www.amazon.com/s?k=mechanical+keyboard&crid=E5KN2TLWK2GH&sprefix=mechanicakeyboard%2Caps%2C418&ref=nb_sb_noss_2'
+url <- "https://www.amazon.com/s?k=pokemon+cards&crid=1IMWTSNKX03SD&sprefix=POKEMON%2Caps%2C419&ref=nb_sb_ss_ts-doa-p_1_7"
 
-cat("URL:", url, "\n")
+session <- bow(url, user_agent = "Student's Demo Educational")
+session
 
-session <- bow(url, user_agent = "Educational")
+session_page <- scrape(session)
 
-BrandDescription <- character(0)
-Price <- character(0)
-No_of_Reviews <- character(0)
-Review_Start <- character (0)
+div_elements <- html_nodes(session_page, 'div.sg-col-4-of-24.sg-col-4-of-12.s-result-item.s-asin.sg-col-4-of-16.sg-col.s-widget-spacing-small.sg-col-4-of-20')
 
-BrandDescription <- scrape(session) %>%
-  html_nodes('a-size-medium a-color-base a-text-normal') %>%
-  html_text()
+brand_descriptions <- character()
+prices <- character()
+review_counts <- character()
+ratings <- character()
 
-BDesc <- data.frame(BrandDescription)
+product_count <- 0
 
-BDesc <- slice(BDesc, 1:3)
+for (div_element in div_elements) {
+ 
+  brand_element <- html_node(div_element, 'a-size-base-plus a-color-base a-text-normal')
+  brand <- ifelse(!is.na(brand_element), html_text(brand_element), '')
+  
+  description_element <- html_node(div_element, 'div.a-section.a-spacing-small')
+  description <- ifelse(!is.na(description_element), html_text(description_element), '')
+  
+  price_element <- html_node(div_element, 'span.a-price-whole')
+  price <- ifelse(!is.na(price_element), html_text(price_element), '')
+  
+  review_count_element <- html_node(div_element, 'span.a-size-base')
+  review_count <- ifelse(!is.na(review_count_element), html_text(review_count_element), '')
+  
 
-print(BDesc)
+  rating_element <- html_node(div_element, 'span.a-icon-alt')
+  rating <- ifelse(!is.na(rating_element), html_text(rating_element), '')
 
-PPrice <- scrape(session) %>%
-  html_nodes('a-price-whole') %>%
-  html_text()
-
-Price <- data.frame(PPrice)
-
-Price <- Price(PPrice, 1:25)
-print(Price)
-
-
-
-colnames(title_list_sub) <- "ranks"
-
-split_df <- strsplit(as.character(title_list_sub$ranks),".",fixed = TRUE)
-split_df <- data.frame(do.call(rbind,split_df))
-
-
-split_df <- split_df[-c(3:4)]
-colnames(split_df) <- c("ranks","title")
-
-str(split_df)
-class(split_df)
-head(split_df)
-
-rank_title <- data.frame(rank_title = split_df)
-write.csv(rank_title,file = "title.csv")
-
-
-link_list <- scrape(session) %>%
-  html_nodes("a.ipc-title-link-wrapper") %>%
-  html_attr('href')
-
-head(link_list)
-
-link_list[245:257]
-
-link <- as.vector(link_list[1:250])
-names(link) <- "links"
-
-head(link)
-tail(link)
-
-
-for (i in 1:250) {
-  link[i] <- paste0("https://imdb.com", link[i], sep = "tt0903747")
+  brand_description <- paste(brand, description)
+  brand_descriptions <- c(brand_descriptions, brand_description)
+  prices <- c(prices, price)
+  review_counts <- c(review_counts, review_count)
+  ratings <- c(ratings, rating)
+  
+  
 }
 
-links <- as.data.frame(link)
+product_df1 <- data.frame(Brand_Description = brand_descriptions,
+                          Price = prices,
+                          Review_Count = review_counts,
+                          Rating = ratings)
 
-rank_title <- data.frame(rank_title = split_df, link)
+write.csv(product_df1, "product1.csv")
 
-scrape_df <- data.frame(rank_title,links)
-names(scrape_df) <- c("Rank","Title","Link")
+product_df1$Category <- "Cards"
 
-head(scrape_df)
-write.csv(scrape_df,file = "top50.csv")
+product_df1 <- product_df1[, c("Category", names(product_df1)[-which(names(product_df1) == "Category")])]
+
+write.csv(product_df1, "FirstProduct.csv", row.names = FALSE)
+
+View(FirstProduct)
