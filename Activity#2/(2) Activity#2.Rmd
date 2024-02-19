@@ -1,22 +1,15 @@
 ---
 title: "Activity#2"
-output:
-  pdf_document: default
-  html_document: default
-date: "2024-02-06"
+author: "Joshua Somosera"
+date: "2024-02-10"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r 1}
+```{r num1}
 install.packages("rvest")
 install.packages("httr")
 install.packages("polite")
@@ -24,22 +17,21 @@ install.packages("polite")
 library(rvest)
 library(httr)
 library(polite)
+```
 
-session <- bow(url,
-               user_agent = "Educational")
-session
+```{r num2}
 polite::use_manners(save_as = 'polite_scrape.R')
 
 urllink <- 'https://www.imdb.com/title/tt4589218/reviews?ref_=tt_urv'
 
-
-
-
-div_elements <- html_nodes(session_page, 'review-container')
+session <- bow(url,
+               user_agent = "Educational")
+session
 ```
 
+```{r num3}
+div_elements <- html_nodes(session_page, 'review-container')
 
-```{r 2}
 Username <- character(0)
 ReviewerDate <- character(0)
 ReviewerContent <- character(0)
@@ -68,7 +60,7 @@ for (page in 1:12)
   Rating
 ```
 
-```{r 3}
+```{r num4}
   DataFrame <- data.frame(Usernames = Username,
                             Reviewer_Date =ReviewerDate,
                             Reviewer_Content = ReviewerContent,
@@ -80,3 +72,4 @@ for (page in 1:12)
   
   
 ```
+

@@ -10,11 +10,11 @@ library(polite)
 
 polite::use_manners(save_as = 'polite_scrape.R')
 
-url8 <- 'https://www.imdb.com/title/tt4972582/reviews/_ajax?ref_=undefined&paginationKey=%s'
+url9 <- 'https://www.imdb.com/title/tt1840309/reviews/_ajax?ref_=undefined&paginationKey=%s'
 
 
-scrape_page <- function(url8, PaginationKey) {
-  session <- bow(sprintf(url8, PaginationKey), user_agent = "Educational")
+scrape_page <- function(url9, PaginationKey) {
+  session <- bow(sprintf(url9, PaginationKey), user_agent = "Educational")
   
   Usernames <- scrape(session) %>% html_nodes('span.display-name-link') %>% html_text()
   ReviewerDates <- scrape(session) %>% html_nodes('span.review-date') %>% html_text()
@@ -37,7 +37,7 @@ per_page <- 25
 pages_to_scrape <- ceiling(reviews_to_scrape / per_page)
 
 for (page in 1:pages_to_scrape) {
-  scraped_data <- scrape_page(url8, PaginationKey)
+  scraped_data <- scrape_page(url9, PaginationKey)
   
   Usernames <- c(Usernames, scraped_data$Usernames)
   ReviewerDates <- c(ReviewerDates, scraped_data$ReviewerDates)
@@ -45,7 +45,7 @@ for (page in 1:pages_to_scrape) {
   Ratings <- c(Ratings, scraped_data$Ratings)
   
   PaginationKey <- scraped_data$PaginationKey
-  
+
   if (length(Usernames) >= reviews_to_scrape) {
     break
   }
@@ -62,5 +62,5 @@ DataFrame <- data.frame(
 
 
 
-write.csv(DataFrame, file = "8EightMov.csv", row.names = FALSE)
+write.csv(DataFrame, file = "9NinthMov.csv", row.names = FALSE)
 print(DataFrame)
