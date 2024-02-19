@@ -6,51 +6,61 @@ library(rvest)
 library(httr)
 library(polite)
 
+
+
 polite::use_manners(save_as = 'polite_scrape.R')
 
-urllink <- 'https://www.imdb.com/title/tt4589218/reviews?ref_=tt_urv'
-
-session <- bow(url,
-               user_agent = "Educational")
-session
+url0 <- 'https://www.imdb.com/title/tt4589218/reviews/_ajax?ref_=undefined&paginationKey=%s'
 
 
-div_elements <- html_nodes(session_page, 'review-container')
+scrape_page <- function(url0, PaginationKey) {
+  session <- bow(sprintf(url0, PaginationKey), user_agent = "Educational")
+  
+  Usernames <- scrape(session) %>% html_nodes('span.display-name-link') %>% html_text()
+  ReviewerDates <- scrape(session) %>% html_nodes('span.review-date') %>% html_text()
+  ReviewerContents <- scrape(session) %>% html_nodes('div.text.show-more__control') %>% html_text()
+  Ratings <- scrape(session) %>% html_nodes('span.rating-other-user-rating') %>% html_text()
+  PaginationKey <- scrape(session) %>% html_nodes("div.load-more-data") %>% html_attr("data-key")
+  
+  return(list(Usernames = Usernames, ReviewerDates = ReviewerDates, ReviewerContents = ReviewerContents, Ratings = Ratings, PaginationKey = PaginationKey))
+}
 
-Username <- character(0)
-ReviewerDate <- character(0)
-ReviewerContent <- character(0)
-Rating <- character(0)
+Usernames <- character(0)
+ReviewerDates <- character(0)
+ReviewerContents <- character(0)
+Ratings <- character(0)
+PaginationKey <- ""
 
-for (page in 1:12) 
-  Username <- scrape (session) %>%
-    html_nodes('span.display-name-link')%>%
-    html_text
-  Username
-  
-  ReviewerDate <- scrape (session) %>%
-    html_nodes('span.review-date')%>%
-    html_text
-  ReviewerDate
 
-  ReviewerContent <- scrape (session) %>%
-    html_nodes('div.text.show-more__control')%>%
-    html_text
-  ReviewerContent
-  
-  
-  Rating <- scrape (session) %>%
-    html_nodes('span.rating-other-user-rating')%>%
-    html_text
-  Rating
+reviews_to_scrape <- 300
+per_page <- 25
+pages_to_scrape <- ceiling(reviews_to_scrape / per_page)
 
-  DataFrame <- data.frame(Usernames = Username,
-                            Reviewer_Date =ReviewerDate,
-                            Reviewer_Content = ReviewerContent,
-                            Rating = Rating)
+for (page in 1:pages_to_scrape) {
+  scraped_data <- scrape_page(url0, PaginationKey)
   
+  Usernames <- c(Usernames, scraped_data$Usernames)
+  ReviewerDates <- c(ReviewerDates, scraped_data$ReviewerDates)
+  ReviewerContents <- c(ReviewerContents, scraped_data$ReviewerContents)
+  Ratings <- c(Ratings, scraped_data$Ratings)
   
-  write.csv(DataFrame, "1DF.csv")
-  View(X1DF)  
+  PaginationKey <- scraped_data$PaginationKey
   
-  
+  if (length(Usernames) >= reviews_to_scrape) {
+    break
+  }
+}
+
+
+
+DataFrame <- data.frame(
+  Usernames = Usernames[1:300],
+  Reviewer_Date = ReviewerDates[1:300],
+  Reviewer_Content = ReviewerContents[1:300],
+  Rating = Ratings[1:300]
+)
+
+
+
+write.csv(DataFrame, file = "0ZeroMov.csv", row.names = FALSE)
+print(DataFrame)
