@@ -43,7 +43,6 @@ for (page in 1:pages_to_scrape) {
   ReviewerDates <- c(ReviewerDates, scraped_data$ReviewerDates)
   ReviewerContents <- c(ReviewerContents, scraped_data$ReviewerContents)
   Ratings <- c(Ratings, scraped_data$Ratings)
-  
   PaginationKey <- scraped_data$PaginationKey
   
   if (length(Usernames) >= reviews_to_scrape) {
