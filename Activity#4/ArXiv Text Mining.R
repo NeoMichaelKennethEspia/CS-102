@@ -22,7 +22,7 @@ abstract <- NULL
 meta <- NULL
 
 # Read only 10 papers
-pages <- seq(from = 0, to = 0, by = 2)
+pages <- seq(from = 0, to = 150, by = 50)
 
 for( i in pages){
   
@@ -32,7 +32,7 @@ for( i in pages){
     html_nodes('a[href^="https://arxiv.org/abs"]') %>% 
     html_attr('href')
   
-  for(j in 1:min(length(tmp_list), 10)){ # Read only 10 papers
+  for(j in 1:min(length(tmp_list), 150)){ 
     
     tmp_paragraph <- read_html(tmp_list[j])
     
@@ -65,13 +65,13 @@ for( i in pages){
     Sys.sleep(1)
     
   }
-  cat((i/10) + 1,'/ 1 page\n')
+  cat((i/10) + 1,'/ 3 page\n')
   
 }
 papers <- data.frame(title, author, subject, abstract, meta)
 
 end <- proc.time()
-end - start # Total Elapsed Time
+end - start 
 
 # Export the result
 save(papers, file = "ArxivRoboticsTextMine.RData")
