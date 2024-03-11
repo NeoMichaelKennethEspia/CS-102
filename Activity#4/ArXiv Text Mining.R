@@ -1,5 +1,3 @@
-# Web Scraping (arXiv Papers)
-
 install.packages("dplyr")
 install.packages("stringr")
 install.packages("httr")
@@ -9,6 +7,8 @@ library(dplyr)
 library(stringr)
 library(httr)
 library(rvest)
+
+#Paper Topic
 
 url <- 'https://arxiv.org/search/?query=Robotics&searchtype=all&abstracts=show&order=-announced_date_first&size=50'
 
@@ -21,8 +21,11 @@ subject <- NULL
 abstract <- NULL
 meta <- NULL
 
-# Read only 10 papers
+# Read 150 papers
 pages <- seq(from = 0, to = 150, by = 50)
+
+
+total_papers <- 0
 
 for( i in pages){
   
@@ -31,8 +34,13 @@ for( i in pages){
     html_nodes('p.list-title.is-inline-block') %>% 
     html_nodes('a[href^="https://arxiv.org/abs"]') %>% 
     html_attr('href')
-  
+
+# Loop para 150 papers ang ma scrape
   for(j in 1:min(length(tmp_list), 150)){ 
+    
+    if (total_papers >= 150) {
+      break 
+    }
     
     tmp_paragraph <- read_html(tmp_list[j])
     
@@ -64,7 +72,14 @@ for( i in pages){
     cat(j, "paper\n")
     Sys.sleep(1)
     
+    # Increment total papers counter
+    total_papers <- total_papers + 1
   }
+  
+  if (total_papers >= 150) {
+    break  # Break out of the outer loop if 150 papers are scraped
+  }
+  
   cat((i/10) + 1,'/ 3 page\n')
   
 }
