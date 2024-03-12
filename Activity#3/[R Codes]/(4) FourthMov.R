@@ -54,6 +54,7 @@ for (page in 1:pages_to_scrape) {
 
 
 DataFrame <- data.frame(
+  Title = rep("Spider-Man: No Way Home", reviews_to_scrape),
   Usernames = Usernames[1:300],
   Reviewer_Date = ReviewerDates[1:300],
   Reviewer_Content = ReviewerContents[1:300],

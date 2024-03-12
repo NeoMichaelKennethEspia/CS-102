@@ -7,7 +7,7 @@ mov6 <- read.csv("Activity#3/[CSV Files]/6SixthMov.csv")
 mov7 <- read.csv("Activity#3/[CSV Files]/7SeventhMov.csv")
 mov8 <- read.csv("Activity#3/[CSV Files]/8EightMov.csv")
 mov9 <- read.csv("Activity#3/[CSV Files]/9NinthMov.csv")
-mov10 <-read.csv("Activity#2/0ZeroMov.csv")
+mov10 <-read.csv("Activity#3/[CSV Files]/0ZeroMov.csv")
 
 merged_movies <- rbind(mov1, mov2, mov3, mov4, mov5, mov6, mov7,mov8,mov9,mov10)
 

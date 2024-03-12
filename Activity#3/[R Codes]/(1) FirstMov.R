@@ -14,8 +14,8 @@ url1 <- 'https://www.imdb.com/title/tt7798634/reviews/_ajax?ref_=undefined&pagin
 
 
 scrape_page <- function(url1, PaginationKey) {
-  session <- bow(sprintf(url1, PaginationKey), user_agent = "Educational")
-  
+  session <- bow (sprintf(url1, PaginationKey), user_agent = "Educational")
+
   Usernames <- scrape(session) %>% html_nodes('span.display-name-link') %>% html_text()
   ReviewerDates <- scrape(session) %>% html_nodes('span.review-date') %>% html_text()
   ReviewerContents <- scrape(session) %>% html_nodes('div.text.show-more__control') %>% html_text()
@@ -38,7 +38,7 @@ pages_to_scrape <- ceiling(reviews_to_scrape / per_page)
 
 for (page in 1:pages_to_scrape) {
   scraped_data <- scrape_page(url1, PaginationKey)
-  
+
   Usernames <- c(Usernames, scraped_data$Usernames)
   ReviewerDates <- c(ReviewerDates, scraped_data$ReviewerDates)
   ReviewerContents <- c(ReviewerContents, scraped_data$ReviewerContents)
@@ -53,6 +53,7 @@ for (page in 1:pages_to_scrape) {
 
 
 DataFrame <- data.frame(
+  Title = rep("Ready or Not", reviews_to_scrape),
   Usernames = Usernames[1:300],
   Reviewer_Date = ReviewerDates[1:300],
   Reviewer_Content = ReviewerContents[1:300],
@@ -61,5 +62,5 @@ DataFrame <- data.frame(
 
 
 
-write.csv(DataFrame, file = "FirstMov.csv", row.names = FALSE)
+write.csv(DataFrame, file = "1First.csv", row.names = FALSE)
 print(DataFrame)

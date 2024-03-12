@@ -10,7 +10,7 @@ library(polite)
 
 polite::use_manners(save_as = 'polite_scrape.R')
 
-url8 <- 'https://www.imdb.com/title/tt4972582/reviews/_ajax?ref_=undefined&paginationKey=%s'
+url8 <- 'https://www.imdb.com/title/tt11762114/reviews/_ajax?ref_=undefined&paginationKey=%s'
 
 
 scrape_page <- function(url8, PaginationKey) {
@@ -54,6 +54,7 @@ for (page in 1:pages_to_scrape) {
 
 
 DataFrame <- data.frame(
+  Title = rep("Mean Girls (2024)", reviews_to_scrape),
   Usernames = Usernames[1:300],
   Reviewer_Date = ReviewerDates[1:300],
   Reviewer_Content = ReviewerContents[1:300],
