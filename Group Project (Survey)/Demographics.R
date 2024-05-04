@@ -1,74 +1,89 @@
-surveydata <- read_csv("Survey Data/surveydata.csv")
+library(dplyr)
+library(tibble)
+library(ggplot2)
+library(readr)
+
+data <- read_csv("Group Project (Survey)/data.csv")
+
+#Removing the unnecessary columns (Timestamp, School Name, Section, and Course)
+CleanedData <- data[, -c(1,7, 8, 9)]
+view(CleanedData)
 
 #Factor Gender
-genderfactor<-factor(surveydata$`Gender:`, levels = c("Straight", "Bisexual","Gay","Lesbian","Transgender","Non-binary/non-conforming","Prefer Not to Say"))
+genderfactor<-factor(CleanedData$`Gender:`, levels = c("Straight", "Bisexual","Gay","Lesbian","Transgender","Non-binary/non-conforming","Prefer Not to Say"))
 summary(genderfactor)
 
-gender_summary <- table(genderfactor)
-
 #Factor Sex
-sexfactor<-factor(surveydata$`SEX:`, levels = c("Male", "Female"))
+sexfactor<-factor(CleanedData$`SEX:`, levels = c("Male", "Female"))
 summary(sexfactor)
 
-sex_summary <- table(sexfactor)
-
-
 #Factor Age 
-agefactor<-factor(surveydata$`Age:`, levels = c(11,12,13,14,15,16,17,18,19,20,21,22,23))
+#The data has "$1" as a value, converted it to "21"
+CleanedData$`Age:`[CleanedData$`Age:` == "$1"] <- 21
+# Convert Age: column to numeric
+CleanedData$`Age:` <- as.numeric(CleanedData$`Age:`)
+
+agefactor <- factor(CleanedData$`Age:`, levels = 11:23)
 summary(agefactor)
-
-age_summary <- table(agefactor)
-
-#Cleaning School Data
-schooldata <-surveydata$`School Name:`
-
-
-school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
-school
-
-school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
-school
-
-school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
-school
-
-#Factor
-schooldata<-factor(schooldata)
-summary(schooldata)
-
-
 
 
 
 #Graph for Gender
-barplot(gender_summary, 
-        main = "Gender Distribution", 
-        xlab = "Genders", 
-        ylab = "Frequency",
-        col = "darkolivegreen3", 
-        border = "darkolivegreen", 
-        ylim = c(0, max(gender_summary) * 1.1), 
-        space = 0.5
+# Define custom colors for each category
+custom_colors <- c("gray12", "midnightblue", "seagreen3", "sienna2", "lightpink2", "blue", "lightgoldenrod1")
+
+# Create a pie chart for gender distribution with custom colors
+GenderPie <- list(
+  pie_chart = pie(gender_summary, 
+                  main = "Gender Distribution", 
+                  labels = names(gender_summary),
+                  col = custom_colors,
+                  border = "black"),
+  
+  # Add legend
+  legend = legend("topright", 
+                  legend = names(gender_summary),
+                  fill = custom_colors,
+                  bty = "n",
+                  title = "Genders")
 )
+
 
 #Graph for Sex
-barplot(sex_summary, 
-        main = "Sex Distribution", 
-        xlab = "Sex", 
-        ylab = "Frequency",
-        col = "lightsteelblue2", 
-        border = "black", 
-        ylim = c(0, max(sex_summary) * 1.1), 
-        space = 0.5
+pie(sex_summary, 
+    main = "Sex Distribution", 
+    labels = c(paste("Male (", sex_summary[1], ")", sep = ""), 
+               paste("Female (", sex_summary[2], ")", sep = "")),
+    col = c("skyblue", "pink3"),
+    border = "black"
 )
 
+legend("topright", 
+       legend = c(paste("Male (", sex_summary[1], ")", sep = ""), 
+                  paste("Female (", sex_summary[2], ")", sep = "")),
+       fill = c("skyblue", "pink3"),
+       bty = "n",
+       title = "Sex")
+
 #Graph for Age
-barplot(age_summary, 
-        main = "Age Distribution", 
-        xlab = "Age", 
-        ylab = "Frequency",
-        col = "slateblue3", 
-        border = "black", 
-        ylim = c(0, max(age_summary) * 1.1), 
-        space = 0.5
+# Increase the size of the pie chart
+par(mar = c(2, 2, 2, 2))  # Adjust margins if necessary
+pie(age_summary, 
+    main = "Age Distribution", 
+    labels = c(paste(names(age_summary), " (", age_summary, ")", sep = "")),
+    col = rainbow(length(age_summary)),
+    border = "black",
+    cex = 1.0 
 )
+
+legend("topright", 
+       legend = c(paste(names(age_summary), " (", age_summary, ")", sep = "")),
+       fill = rainbow(length(age_summary)),
+       bty = "n",
+       title = "Age",
+       cex = 0.8)
+
+
+
+
+
