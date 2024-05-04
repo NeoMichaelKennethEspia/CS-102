@@ -26,7 +26,11 @@ schooldata <-surveydata$`School Name:`
 school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
 school
 
+school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
+school
 
+school<- gsub("Iloilo Scienc and Technology University| Iloilo science and technology University |Iloilo Science and Technology University | ILOILO SCIENCE AND TECHNOLOGY UNIVERSITY |ISATU |ISATU MAIN  ", "Iloilo Science and Technology University", surveydata$`School Name:`)
+school
 
 #Factor
 schooldata<-factor(schooldata)
