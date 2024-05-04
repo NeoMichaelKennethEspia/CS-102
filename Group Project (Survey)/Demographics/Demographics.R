@@ -2,87 +2,92 @@ library(dplyr)
 library(tibble)
 library(ggplot2)
 library(readr)
-
+########################################################################################################################################################
 data <- read_csv("Group Project (Survey)/data.csv")
 
 #Removing the unnecessary columns (Timestamp, School Name, Section, and Course)
 CleanedData <- data[, -c(1,7, 8, 9)]
 view(CleanedData)
 
+########################################################################################################################################################
+
 #Factor Gender
-genderfactor<-factor(CleanedData$`Gender:`, levels = c("Straight", "Bisexual","Gay","Lesbian","Transgender","Non-binary/non-conforming","Prefer Not to Say"))
+CleanedData$`Gender:`[is.na(CleanedData$`Gender:`)] <- "Prefer Not To Say"
+genderfactor <- factor(CleanedData$`Gender:`, levels = c("Straight", "Bisexual", "Gay", "Lesbian", "Transgender", "Non-binary/non-conforming", "Prefer Not To Say"))
 summary(genderfactor)
+
+########################################################################################################################################################
 
 #Factor Sex
 sexfactor<-factor(CleanedData$`SEX:`, levels = c("Male", "Female"))
 summary(sexfactor)
+
+########################################################################################################################################################
 
 #Factor Age 
 #The data has "$1" as a value, converted it to "21"
 CleanedData$`Age:`[CleanedData$`Age:` == "$1"] <- 21
 # Convert Age: column to numeric
 CleanedData$`Age:` <- as.numeric(CleanedData$`Age:`)
-
 agefactor <- factor(CleanedData$`Age:`, levels = 11:23)
 summary(agefactor)
 
+#Getting the mean for Age
+age <- c(CleanedData$`Age:`)
+average <- mean(age, na.rm = TRUE)
+avg <- paste("The mean age of the respondents is", average)
+print(avg)
+
+########################################################################################################################################################
 
 
+########################################################################################################################################################
 #Graph for Gender
-# Define custom colors for each category
-custom_colors <- c("gray12", "midnightblue", "seagreen3", "sienna2", "lightpink2", "blue", "lightgoldenrod1")
+gender_counts <- table(genderfactor)
 
-# Create a pie chart for gender distribution with custom colors
-GenderPie <- list(
-  pie_chart = pie(gender_summary, 
-                  main = "Gender Distribution", 
-                  labels = names(gender_summary),
-                  col = custom_colors,
-                  border = "black"),
-  
-  # Add legend
-  legend = legend("topright", 
-                  legend = names(gender_summary),
-                  fill = custom_colors,
-                  bty = "n",
-                  title = "Genders")
+# Plot a pie chart
+pie(gender_counts,
+    main = "Gender Distribution",
+    col = rainbow(length(gender_counts)),
+    labels = paste(names(gender_counts), " (", gender_counts, ")", sep = ""),
+    clockwise = TRUE,
+    density = NULL,
+    angle = 45,
+    init.angle = 90,
+    border = "white"
 )
 
+# Add a legend with counts
+legend("topright",
+       legend = paste(names(gender_counts), " (", gender_counts, ")", sep = ""),
+       fill = rainbow(length(gender_counts)),
+       title = "Gender"
+)
 
+############################################################################
+
+############################################################################
 #Graph for Sex
-pie(sex_summary, 
+sex_table <- table(CleanedData$`SEX:`)
+
+sex_colors <- c("pink", "skyblue")
+
+pie(sex_table, 
     main = "Sex Distribution", 
-    labels = c(paste("Male (", sex_summary[1], ")", sep = ""), 
-               paste("Female (", sex_summary[2], ")", sep = "")),
-    col = c("skyblue", "pink3"),
-    border = "black"
+    labels = paste(names(sex_table), " (", sex_table, ")", sep = ""),
+    col = sex_colors
 )
+############################################################################
 
-legend("topright", 
-       legend = c(paste("Male (", sex_summary[1], ")", sep = ""), 
-                  paste("Female (", sex_summary[2], ")", sep = "")),
-       fill = c("skyblue", "pink3"),
-       bty = "n",
-       title = "Sex")
-
+############################################################################
 #Graph for Age
-# Increase the size of the pie chart
-par(mar = c(2, 2, 2, 2))  # Adjust margins if necessary
-pie(age_summary, 
-    main = "Age Distribution", 
-    labels = c(paste(names(age_summary), " (", age_summary, ")", sep = "")),
-    col = rainbow(length(age_summary)),
-    border = "black",
-    cex = 1.0 
-)
+age_counts <- table(agefactor)
+age_labels <- names(age_counts)
 
-legend("topright", 
-       legend = c(paste(names(age_summary), " (", age_summary, ")", sep = "")),
-       fill = rainbow(length(age_summary)),
-       bty = "n",
-       title = "Age",
-       cex = 0.8)
+pie(age_counts, labels = age_labels, col = rainbow(length(age_counts)), main = "Age Distribution")
+legend("topright", legend = paste(age_labels, ": ", age_counts), fill = rainbow(length(age_counts)))
 
+########################################################################
 
 
 
