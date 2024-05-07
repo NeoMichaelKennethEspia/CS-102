@@ -63,7 +63,10 @@ legend("topright",
        fill = rainbow(length(gender_counts)),
        title = "Gender"
 )
-
+"This bar plot visualizes the gender distribution among respondents in the survey. 
+Each bar represents the count of respondents who chose a particular gender category.
+The height of each bar indicates the number of respondents, with labels on top of each bar showing the exact count. 
+The legend on the top-right corner provides a color key for each gender category."
 ############################################################################
 
 ############################################################################
